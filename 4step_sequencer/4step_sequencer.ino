@@ -8,17 +8,17 @@
  *  
  * todo: 
  *  
- *  - bpm petentometer
- *  - octave petentometer
- *  - square/triangle/sin/drums wave petentometer
+ *  - bpm potentiometer
+ *  - octave potentiometer
+ *  - square/triangle/sin/drums wave potentiometer
  *  - sound on off switch
  *  - lcd screen
  *  - amp
- *  - volume petentometer
+ *  - volume potentiometer
  *  - case
 */  
 
-// Tones table definition
+// tones definition
 #define NOTE_B0  31
 #define NOTE_C1  33
 #define NOTE_CS1 35
@@ -110,9 +110,7 @@
 #define NOTE_DS8 4978
 
 
-// Declaration of tones used in the sequencer
-// Define here the note you want to play.
-// The first notes are mapped to the lowest position of the pots
+// tones the potentiometer plays
 int pitch[] = { 
                 NOTE_C3,
                 NOTE_GS3,
@@ -128,9 +126,9 @@ int pitch[] = {
                 NOTE_FS4};
                 
                 
-// Declaration of variables               
-int speaker = 9;                          // Speaker output pin
-int k=0;                                     // Variable to store the value of the loop   
+// init var          
+int speaker = 9;                          // speaker output pin
+int k=0;                                     // variable to store the value of the loop   
 int POT1 = A0;                              // POT1 pin
 int POT2 = A1;                              // POT2 pin
 int POT3 = A2;                              // POT3 pin
@@ -140,16 +138,16 @@ int Led1 = 2;
 int Led2 = 3;
 int Led3 = 4;
 int Led4 = 5;
-int ReadPot1,ReadPot2,ReadPot3,ReadPot4;                           // Variable to store the value of the pots
-// Variables used to calculate tempo
+int ReadPot1,ReadPot2,ReadPot3,ReadPot4;                           // variable to store the value of the pots
+// variables used to calculate tempo
 // set BPM
 int bpm=95;
-// set Subdivision 1=quarter note; 0.5 ->eight note, ....
+// set subdivision 1=quarter note; 0.5 ->eight note, ....
 float subdivision=1;
-//Define here the sequence of durations
+//define here the sequence of durations
 //-> 1->quarter note; 0.5 ->eight note, ....
 float D[] = {1, 1, 1, 1}; //4/4 pattern
-// The lenght of the D array
+// the lenght of the D array
 int NDuration=4;  
 int DurCount=0;                               
 int value[] = {0, 0, 0, 0};              // value to define the discrete interval of tune using the pot
@@ -169,11 +167,11 @@ void setup() {
 
 
 void loop() { 
-   //if(digitalRead(activateButton)==HIGH){
-    for (k = 0; k <= 3; k++) {                                 // Cycle on each pot
-      value[k] = map(analogRead(k), 0, 1023, 0, 2500);         // Mapping the value of the Potentiometer to have a wider range of values
+    //sequence loop
+    for (k = 0; k <= 3; k++) {                                 // cycle on each pot
+      value[k] = map(analogRead(k), 0, 1023, 0, 2500);         // mapping the value of the Potentiometer to have a wider range of values
       
-      if ((value[k]>=0) && (value[k]<100))                     // Discretization of the pot intervals - in order to assign the note
+      if ((value[k]>=0) && (value[k]<100))                     // discretization of the pot intervals - in order to assign the note
         note[k] = 0;    
       if ((value[k]>=100) && (value[k]<300))
         note[k] = pitch[0];
@@ -200,7 +198,7 @@ void loop() {
       if ((value[k]>=2300) && (value[k]<=2500))
         note[k] = pitch[11];       
 
-      //Leds
+      //leds
       //deactivate all leds
       digitalWrite(Led1, LOW);
       digitalWrite(Led2, LOW);
@@ -219,11 +217,10 @@ void loop() {
       }
 
       float Duration=D[DurCount]*interval;
-      tone(speaker, note[k], Duration);           // Play the note
+      tone(speaker, note[k], Duration);           // play the note
       DurCount++;
       if(DurCount>=NDuration)DurCount=0;    
       
       delay(Duration);
-    //}
    }
 }
