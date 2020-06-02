@@ -4,17 +4,15 @@
  *  connect led1 to pin d2, led2 to pin d3, led3 to pin d4, led4 to pin d5
  *  connect speaker to pin d9
  *  connect pitch potentometers to a0 to a3
+ *  connect octave potentometer to a4
+ *  connect bpm potentometer to a5
  *  
  *  
  * todo: 
  *  
- *  - bpm potentiometer
- *  - octave potentiometer
  *  - square/triangle/sin/drums wave potentiometer
  *  - sound on off switch
- *  - lcd screen
- *  - amp
- *  - volume potentiometer
+ *  - pattern potentiometer
  *  - case
 */  
 
@@ -112,18 +110,8 @@
 
 // tones the potentiometer plays
 int pitch[] = { 
-                NOTE_C3,
-                NOTE_GS3,
-                NOTE_CS3,
-                NOTE_AS3,
-                NOTE_A3,
-                NOTE_B3,
-                NOTE_F4,
-                NOTE_DS4,
-                NOTE_E4,
-                NOTE_G3,
-                NOTE_D4,
-                NOTE_FS4};
+  NOTE_C3, NOTE_CS3, NOTE_D3, NOTE_DS3, NOTE_E3, NOTE_F3, NOTE_FS3, NOTE_G3, NOTE_GS3, NOTE_A3, NOTE_AS3, NOTE_B3  
+};
                 
                 
 // init var          
@@ -133,7 +121,9 @@ int POT1 = A0;                              // POT1 pin
 int POT2 = A1;                              // POT2 pin
 int POT3 = A2;                              // POT3 pin
 int POT4 = A3;                              // POT4 pin
-int activateButton = A7;                //activate Switch
+int POToct = A4;
+int POTbpm = A5;
+int activateButton = A7;                //activate switch
 int Led1 = 2;
 int Led2 = 3;
 int Led3 = 4;
@@ -152,11 +142,14 @@ int NDuration=4;
 int DurCount=0;                               
 int value[] = {0, 0, 0, 0};              // value to define the discrete interval of tune using the pot
 int note[] = {0, 0, 0, 0};  
+int oct_value = 3;
 int interval; 
 
 void setup() {
-    //activate Pins
-    pinMode(activateButton, INPUT);
+    Serial.begin(9600);  //setup serial
+    
+    //activate pins
+    //pinMode(activateButton, INPUT);
     pinMode(Led1, OUTPUT);
     pinMode(Led2, OUTPUT);
     pinMode(Led3, OUTPUT);
@@ -169,8 +162,114 @@ void setup() {
 void loop() { 
     //sequence loop
     for (k = 0; k <= 3; k++) {                                 // cycle on each pot
-      value[k] = map(analogRead(k), 0, 1023, 0, 2500);         // mapping the value of the Potentiometer to have a wider range of values
+    
+      //octave pot
+      oct_value = analogRead(POToct);
+      if ((oct_value>=0) && (oct_value<166)){
+        pitch[0] = NOTE_C1;
+        pitch[1] = NOTE_CS1;
+        pitch[2] = NOTE_D1;
+        pitch[3] = NOTE_DS1;
+        pitch[4] = NOTE_E1;
+        pitch[5] = NOTE_F1;
+        pitch[6] = NOTE_FS1;
+        pitch[7] = NOTE_G1;
+        pitch[8] = NOTE_GS1;
+        pitch[9] = NOTE_A1;
+        pitch[10] = NOTE_AS1;
+        pitch[11] = NOTE_B1;  
+      }
+      if ((oct_value>=166) && (oct_value<333)){
+        pitch[0] = NOTE_C2;
+        pitch[1] = NOTE_CS2;
+        pitch[2] = NOTE_D2;
+        pitch[3] = NOTE_DS2;
+        pitch[4] = NOTE_E2;
+        pitch[5] = NOTE_F2;
+        pitch[6] = NOTE_FS2;
+        pitch[7] = NOTE_G2;
+        pitch[8] = NOTE_GS2;
+        pitch[9] = NOTE_A2;
+        pitch[10] = NOTE_AS2;
+        pitch[11] = NOTE_B2;  
+      }
+      if ((oct_value>=333) && (oct_value<499)){
+        pitch[0] = NOTE_C3;
+        pitch[1] = NOTE_CS3;
+        pitch[2] = NOTE_D3;
+        pitch[3] = NOTE_DS3;
+        pitch[4] = NOTE_E3;
+        pitch[5] = NOTE_F3;
+        pitch[6] = NOTE_FS3;
+        pitch[7] = NOTE_G3;
+        pitch[8] = NOTE_GS3;
+        pitch[9] = NOTE_A3;
+        pitch[10] = NOTE_AS3;
+        pitch[11] = NOTE_B3;  
+      }
+      if ((oct_value>=499) && (oct_value<665)){
+        pitch[0] = NOTE_C4;
+        pitch[1] = NOTE_CS4;
+        pitch[2] = NOTE_D4;
+        pitch[3] = NOTE_DS4;
+        pitch[4] = NOTE_E4;
+        pitch[5] = NOTE_F4;
+        pitch[6] = NOTE_FS4;
+        pitch[7] = NOTE_G4;
+        pitch[8] = NOTE_GS4;
+        pitch[9] = NOTE_A4;
+        pitch[10] = NOTE_AS4;
+        pitch[11] = NOTE_B4;  
+      }
+      if ((oct_value>=665) && (oct_value<831)){
+        pitch[0] = NOTE_C5;
+        pitch[1] = NOTE_CS5;
+        pitch[2] = NOTE_D5;
+        pitch[3] = NOTE_DS5;
+        pitch[4] = NOTE_E5;
+        pitch[5] = NOTE_F5;
+        pitch[6] = NOTE_FS5;
+        pitch[7] = NOTE_G5;
+        pitch[8] = NOTE_GS5;
+        pitch[9] = NOTE_A5;
+        pitch[10] = NOTE_AS5;
+        pitch[11] = NOTE_B5;  
+      }
+      if ((oct_value>=831) && (oct_value<997)){
+        pitch[0] = NOTE_C6;
+        pitch[1] = NOTE_CS6;
+        pitch[2] = NOTE_D6;
+        pitch[3] = NOTE_DS6;
+        pitch[4] = NOTE_E6;
+        pitch[5] = NOTE_F6;
+        pitch[6] = NOTE_FS6;
+        pitch[7] = NOTE_G6;
+        pitch[8] = NOTE_GS6;
+        pitch[9] = NOTE_A6;
+        pitch[10] = NOTE_AS6;
+        pitch[11] = NOTE_B6;  
+      }
+      if ((oct_value>=997)){
+        pitch[0] = NOTE_C7;
+        pitch[1] = NOTE_CS7;
+        pitch[2] = NOTE_D7;
+        pitch[3] = NOTE_DS7;
+        pitch[4] = NOTE_E7;
+        pitch[5] = NOTE_F7;
+        pitch[6] = NOTE_FS7;
+        pitch[7] = NOTE_G7;
+        pitch[8] = NOTE_GS7;
+        pitch[9] = NOTE_A7;
+        pitch[10] = NOTE_AS7;
+        pitch[11] = NOTE_B7;  
+      }
+  
+       //bpm pot
+        bpm = (analogRead(POTbpm)/1.5);
+        if(bpm < 60){ bpm = 60;}
+        interval = 60000/(subdivision*bpm);  
       
+      value[k] = map(analogRead(k), 0, 1023, 0, 2500);         // mapping the value of the Potentiometer to have a wider range of values
       if ((value[k]>=0) && (value[k]<100))                     // discretization of the pot intervals - in order to assign the note
         note[k] = 0;    
       if ((value[k]>=100) && (value[k]<300))
