@@ -1,3 +1,4 @@
+
 /*
  *  circuit:
  *  
@@ -6,10 +7,13 @@
  *  connect pitch potentometers to a0 to a3
  *  connect octave potentometer to a4
  *  connect bpm potentometer to a5
- *  
+ *  connect pattern potentometer to a6
+ *  connect wave potentometer to a7
+ *  connect on off button to pin 6
  *  
  * todo: 
- *  
+ *  - on off switch 
+ *  - mark new potentometers
  *  - square/triangle/sin/drums wave potentiometer
  *  - sound on off switch
  *  - pattern potentiometer
