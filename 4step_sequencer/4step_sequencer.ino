@@ -1,3 +1,6 @@
+#include <SineWave.h>
+#include <TimerOne.h>
+
 
 /*
  *  circuit:
@@ -12,10 +15,6 @@
  *  connect on off button to pin 6
  *  
  * todo: 
- *  - on off switch 
- *  - mark new potentometers
- *  - square/triangle/sin/drums wave potentiometer
- *  - sound on off switch
  *  - pattern potentiometer
  *  - case
 */  
@@ -121,18 +120,15 @@ int pitch[] = {
 // init var          
 int speaker = 9;                          // speaker output pin
 int k=0;                                     // variable to store the value of the loop   
-int POT1 = A0;                              // POT1 pin
-int POT2 = A1;                              // POT2 pin
-int POT3 = A2;                              // POT3 pin
-int POT4 = A3;                              // POT4 pin
-int POToct = A4;
-int POTbpm = A5;
-int activateButton = A7;                //activate switch
+int POToct = A4;                            // Octave POT pin
+int POTbpm = A5;                            // BPM POT pin
+int POTwave = A7;                           // Waveform POT pin
+int POTpattern = A6;                        // Pattern POT pin
+int activateButton = 6;                //activate switch
 int Led1 = 2;
 int Led2 = 3;
 int Led3 = 4;
 int Led4 = 5;
-int ReadPot1,ReadPot2,ReadPot3,ReadPot4;                           // variable to store the value of the pots
 // variables used to calculate tempo
 // set BPM
 int bpm=95;
@@ -146,27 +142,76 @@ int NDuration=4;
 int DurCount=0;                               
 int value[] = {0, 0, 0, 0};              // value to define the discrete interval of tune using the pot
 int note[] = {0, 0, 0, 0};  
-int oct_value = 3;
+int oct_value = 3; // pot value
+int wave_value = 1; // pot value
+int pattern_value = 1; //pot value
 int interval; 
+bool active = true; // sound active or not
+int wave = 0; //0 = square 1 = sin
 
 void setup() {
     Serial.begin(9600);  //setup serial
     
     //activate pins
-    //pinMode(activateButton, INPUT);
+    pinMode(activateButton, INPUT);
     pinMode(Led1, OUTPUT);
     pinMode(Led2, OUTPUT);
     pinMode(Led3, OUTPUT);
     pinMode(Led4, OUTPUT);
     //Period computed according bpm and subdivision
-    interval = 60000/(subdivision*bpm);  
+    interval = 60000/(subdivision*bpm); 
+
+    //sine wave gen
+    sw.setPin(speaker);
+    sw.setInterval(interval);
 }
 
 
 void loop() { 
     //sequence loop
     for (k = 0; k <= 3; k++) {                                 // cycle on each pot
-    
+
+      //check if sound active button is activated
+      if(digitalRead(activateButton)){
+        active = !active;
+      }
+
+      Serial.println(pattern_value);
+      //wave pot
+      wave_value = analogRead(POTwave);
+      if ((wave_value>= 0) && (wave_value<500)){ //square
+        wave = 0;
+      }else{ //sin
+        wave = 1;
+      }
+
+      //pattern po
+      pattern_value = analogRead(POTpattern);
+      if((pattern_value>= 0) && (pattern_value<250)){
+        D[0] = 1;
+        D[1] = 1;
+        D[2] = 1;
+        D[3] = 1;
+      }
+      if((pattern_value>= 251) && (pattern_value<500)){
+        D[0] = 1;
+        D[1] = .5;
+        D[2] = .5;
+        D[3] = 1;
+      }
+      if((pattern_value>= 501) && (pattern_value<750)){
+        D[0] = 1;
+        D[1] = .33;
+        D[2] = .33;
+        D[3] = .33;
+      }
+      if((pattern_value>= 751)&& (pattern_value<1023)){
+        D[0] = .5;
+        D[1] = .5;
+        D[2] = .5;
+        D[3] = .5;
+      }
+       
       //octave pot
       oct_value = analogRead(POToct);
       if ((oct_value>=0) && (oct_value<166)){
@@ -272,7 +317,7 @@ void loop() {
         bpm = (analogRead(POTbpm)/1.5);
         if(bpm < 60){ bpm = 60;}
         interval = 60000/(subdivision*bpm);  
-      
+
       value[k] = map(analogRead(k), 0, 1023, 0, 2500);         // mapping the value of the Potentiometer to have a wider range of values
       if ((value[k]>=0) && (value[k]<100))                     // discretization of the pot intervals - in order to assign the note
         note[k] = 0;    
@@ -320,10 +365,23 @@ void loop() {
       }
 
       float Duration=D[DurCount]*interval;
-      tone(speaker, note[k], Duration);           // play the note
+      if(active == true){ // if sound is active play sound
+        // play the note
+        if(wave == 0){
+          tone(speaker, note[k], Duration);   //square    
+        }
+        if(wave == 1){
+          if(note[k] != 0){
+          sw.playTone(note[k], Duration); // sin
+          }
+        }
+        
+      }
       DurCount++;
       if(DurCount>=NDuration)DurCount=0;    
       
       delay(Duration);
+      
+      if(wave = 1){sw.stopTone();} // if wave is sin then stop sin sound after delay
    }
 }
