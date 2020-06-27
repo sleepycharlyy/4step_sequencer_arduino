@@ -1,5 +1,5 @@
-#include <SineWave.h>
-#include <TimerOne.h>
+#include<SineWave.h>
+#include<TimerOne.h>
 
 
 /*
@@ -14,12 +14,9 @@
  *  connect wave potentometer to a7
  *  connect on off button to pin 6
  *  
- * todo: 
- *  - pattern potentiometer
- *  - case
 */  
 
-// tones definition
+/* tones definition */
 #define NOTE_B0  31
 #define NOTE_C1  33
 #define NOTE_CS1 35
@@ -111,73 +108,74 @@
 #define NOTE_DS8 4978
 
 
-// tones the potentiometer plays
+/* tones the pitch potentiometer plays */
 int pitch[] = { 
   NOTE_C3, NOTE_CS3, NOTE_D3, NOTE_DS3, NOTE_E3, NOTE_F3, NOTE_FS3, NOTE_G3, NOTE_GS3, NOTE_A3, NOTE_AS3, NOTE_B3  
 };
                 
                 
-// init var          
-int speaker = 9;                          // speaker output pin
-int k=0;                                     // variable to store the value of the loop   
-int POToct = A4;                            // Octave POT pin
-int POTbpm = A5;                            // BPM POT pin
-int POTwave = A7;                           // Waveform POT pin
-int POTpattern = A6;                        // Pattern POT pin
-int activateButton = 6;                //activate switch
-int Led1 = 2;
-int Led2 = 3;
-int Led3 = 4;
-int Led4 = 5;
-// variables used to calculate tempo
-// set BPM
+/* initalize variables */          
+const int speaker = 9;                          /* speaker output pin */
+const int POToct = A4;                            /* octave pot pin */
+const int POTbpm = A5;                            /* bpm pot pin */
+const int POTwave = A7;                           /* waveform pot pin */
+const int POTpattern = A6;                        /* pattern pot pin */
+const int activateButton = 6;                /* sound on / off switch */
+const int Led1 = 2;
+const int Led2 = 3;
+const int Led3 = 4;
+const int Led4 = 5;
+
+int k=0;                                     /* variable to store the value of the loop */  
+/* set bpm */
 int bpm=95;
-// set subdivision 1=quarter note; 0.5 ->eight note, ....
-float subdivision=1;
-//define here the sequence of durations
-//-> 1->quarter note; 0.5 ->eight note, ....
-float D[] = {1, 1, 1, 1}; //4/4 pattern
-// the lenght of the D array
-int NDuration=4;  
+/* set subdivision 1=quarter note; 0.5 ->eight note, .... */
+const float subdivision=1;
+/* sequence of durations -> 1->quarter note; 0.5 ->eight note, ....*/
+float D[] = {1, 1, 1, 1}; /* 4/4 pattern */
+const int NDuration=4;  /* the lenght of the D array */
 int DurCount=0;                               
-int value[] = {0, 0, 0, 0};              // value to define the discrete interval of tune using the pot
-int note[] = {0, 0, 0, 0};  
-int oct_value = 3; // pot value
-int wave_value = 1; // pot value
-int pattern_value = 1; //pot value
+
+int value[] = {0, 0, 0, 0};              /* value to define the discrete interval of tune using the pot */
+int note[] = {0, 0, 0, 0};
+       
+int oct_value = 3; /* pot value */
+int wave_value = 1; /* pot value */
+int pattern_value = 1; /* pot value */
+
 int interval; 
-bool active = true; // sound active or not
-int wave = 0; //0 = square 1 = sin
+bool active = true; /* sound active or not */
+int wave = 0; /* 0 = square 1 = sine */
 
 void setup() {
     Serial.begin(9600);  //setup serial
     
-    //activate pins
+    /* activate pins */
     pinMode(activateButton, INPUT);
     pinMode(Led1, OUTPUT);
     pinMode(Led2, OUTPUT);
     pinMode(Led3, OUTPUT);
     pinMode(Led4, OUTPUT);
-    //Period computed according bpm and subdivision
+    
     interval = 60000/(subdivision*bpm); 
 
-    //sine wave gen
+    /* sine wave gen  */
     sw.setPin(speaker);
     sw.setInterval(interval);
 }
 
 
 void loop() { 
-    //sequence loop
-    for (k = 0; k <= 3; k++) {                                 // cycle on each pot
+    /* sequence loop */
+    for (k = 0; k <= 3; k++) {                                 /* cycle through each pitch pot */
 
-      //check if sound active button is activated
+      /* check if sound active button is activated */
       if(digitalRead(activateButton)){
         active = !active;
       }
 
       Serial.println(pattern_value);
-      //wave pot
+      /* wave pot */
       wave_value = analogRead(POTwave);
       if ((wave_value>= 0) && (wave_value<500)){ //square
         wave = 0;
@@ -185,203 +183,207 @@ void loop() {
         wave = 1;
       }
 
-      //pattern po
-      pattern_value = analogRead(POTpattern);
-      if((pattern_value>= 0) && (pattern_value<250)){
-        D[0] = 1;
-        D[1] = 1;
-        D[2] = 1;
-        D[3] = 1;
-      }
-      if((pattern_value>= 251) && (pattern_value<500)){
-        D[0] = 1;
-        D[1] = .5;
-        D[2] = .5;
-        D[3] = 1;
-      }
-      if((pattern_value>= 501) && (pattern_value<750)){
-        D[0] = 1;
-        D[1] = .33;
-        D[2] = .33;
-        D[3] = .33;
-      }
-      if((pattern_value>= 751)&& (pattern_value<1023)){
-        D[0] = .5;
-        D[1] = .5;
-        D[2] = .5;
-        D[3] = .5;
-      }
+      /* pattern pot */
+        pattern_value = analogRead(POTpattern);
+        if((pattern_value>= 0) && (pattern_value<250)){
+          D[0] = 1;
+          D[1] = 1;
+          D[2] = 1;
+          D[3] = 1;
+        }
+        if((pattern_value>= 251) && (pattern_value<500)){
+          D[0] = 1;
+          D[1] = .5;
+          D[2] = .5;
+          D[3] = 1;
+        }
+        if((pattern_value>= 501) && (pattern_value<750)){
+          D[0] = 1;
+          D[1] = .33;
+          D[2] = .33;
+          D[3] = .33;
+        }
+        if((pattern_value>= 751)&& (pattern_value<1023)){
+          D[0] = .5;
+          D[1] = .5;
+          D[2] = .5;
+          D[3] = .5;
+        }
        
-      //octave pot
-      oct_value = analogRead(POToct);
-      if ((oct_value>=0) && (oct_value<166)){
-        pitch[0] = NOTE_C1;
-        pitch[1] = NOTE_CS1;
-        pitch[2] = NOTE_D1;
-        pitch[3] = NOTE_DS1;
-        pitch[4] = NOTE_E1;
-        pitch[5] = NOTE_F1;
-        pitch[6] = NOTE_FS1;
-        pitch[7] = NOTE_G1;
-        pitch[8] = NOTE_GS1;
-        pitch[9] = NOTE_A1;
-        pitch[10] = NOTE_AS1;
-        pitch[11] = NOTE_B1;  
-      }
-      if ((oct_value>=166) && (oct_value<333)){
-        pitch[0] = NOTE_C2;
-        pitch[1] = NOTE_CS2;
-        pitch[2] = NOTE_D2;
-        pitch[3] = NOTE_DS2;
-        pitch[4] = NOTE_E2;
-        pitch[5] = NOTE_F2;
-        pitch[6] = NOTE_FS2;
-        pitch[7] = NOTE_G2;
-        pitch[8] = NOTE_GS2;
-        pitch[9] = NOTE_A2;
-        pitch[10] = NOTE_AS2;
-        pitch[11] = NOTE_B2;  
-      }
-      if ((oct_value>=333) && (oct_value<499)){
-        pitch[0] = NOTE_C3;
-        pitch[1] = NOTE_CS3;
-        pitch[2] = NOTE_D3;
-        pitch[3] = NOTE_DS3;
-        pitch[4] = NOTE_E3;
-        pitch[5] = NOTE_F3;
-        pitch[6] = NOTE_FS3;
-        pitch[7] = NOTE_G3;
-        pitch[8] = NOTE_GS3;
-        pitch[9] = NOTE_A3;
-        pitch[10] = NOTE_AS3;
-        pitch[11] = NOTE_B3;  
-      }
-      if ((oct_value>=499) && (oct_value<665)){
-        pitch[0] = NOTE_C4;
-        pitch[1] = NOTE_CS4;
-        pitch[2] = NOTE_D4;
-        pitch[3] = NOTE_DS4;
-        pitch[4] = NOTE_E4;
-        pitch[5] = NOTE_F4;
-        pitch[6] = NOTE_FS4;
-        pitch[7] = NOTE_G4;
-        pitch[8] = NOTE_GS4;
-        pitch[9] = NOTE_A4;
-        pitch[10] = NOTE_AS4;
-        pitch[11] = NOTE_B4;  
-      }
-      if ((oct_value>=665) && (oct_value<831)){
-        pitch[0] = NOTE_C5;
-        pitch[1] = NOTE_CS5;
-        pitch[2] = NOTE_D5;
-        pitch[3] = NOTE_DS5;
-        pitch[4] = NOTE_E5;
-        pitch[5] = NOTE_F5;
-        pitch[6] = NOTE_FS5;
-        pitch[7] = NOTE_G5;
-        pitch[8] = NOTE_GS5;
-        pitch[9] = NOTE_A5;
-        pitch[10] = NOTE_AS5;
-        pitch[11] = NOTE_B5;  
-      }
-      if ((oct_value>=831) && (oct_value<997)){
-        pitch[0] = NOTE_C6;
-        pitch[1] = NOTE_CS6;
-        pitch[2] = NOTE_D6;
-        pitch[3] = NOTE_DS6;
-        pitch[4] = NOTE_E6;
-        pitch[5] = NOTE_F6;
-        pitch[6] = NOTE_FS6;
-        pitch[7] = NOTE_G6;
-        pitch[8] = NOTE_GS6;
-        pitch[9] = NOTE_A6;
-        pitch[10] = NOTE_AS6;
-        pitch[11] = NOTE_B6;  
-      }
-      if ((oct_value>=997)){
-        pitch[0] = NOTE_C7;
-        pitch[1] = NOTE_CS7;
-        pitch[2] = NOTE_D7;
-        pitch[3] = NOTE_DS7;
-        pitch[4] = NOTE_E7;
-        pitch[5] = NOTE_F7;
-        pitch[6] = NOTE_FS7;
-        pitch[7] = NOTE_G7;
-        pitch[8] = NOTE_GS7;
-        pitch[9] = NOTE_A7;
-        pitch[10] = NOTE_AS7;
-        pitch[11] = NOTE_B7;  
-      }
+      /* octave pot */
+        oct_value = analogRead(POToct);
+        if ((oct_value>=0) && (oct_value<166)){
+          pitch[0] = NOTE_C1;
+          pitch[1] = NOTE_CS1;
+          pitch[2] = NOTE_D1;
+          pitch[3] = NOTE_DS1;
+          pitch[4] = NOTE_E1;
+          pitch[5] = NOTE_F1;
+          pitch[6] = NOTE_FS1;
+          pitch[7] = NOTE_G1;
+          pitch[8] = NOTE_GS1;
+          pitch[9] = NOTE_A1;
+          pitch[10] = NOTE_AS1;
+          pitch[11] = NOTE_B1;  
+        }
+        if ((oct_value>=166) && (oct_value<333)){
+          pitch[0] = NOTE_C2;
+          pitch[1] = NOTE_CS2;
+          pitch[2] = NOTE_D2;
+          pitch[3] = NOTE_DS2;
+          pitch[4] = NOTE_E2;
+          pitch[5] = NOTE_F2;
+          pitch[6] = NOTE_FS2;
+          pitch[7] = NOTE_G2;
+          pitch[8] = NOTE_GS2;
+          pitch[9] = NOTE_A2;
+          pitch[10] = NOTE_AS2;
+          pitch[11] = NOTE_B2;  
+        }
+        if ((oct_value>=333) && (oct_value<499)){
+          pitch[0] = NOTE_C3;
+          pitch[1] = NOTE_CS3;
+          pitch[2] = NOTE_D3;
+          pitch[3] = NOTE_DS3;
+          pitch[4] = NOTE_E3;
+          pitch[5] = NOTE_F3;
+          pitch[6] = NOTE_FS3;
+          pitch[7] = NOTE_G3;
+          pitch[8] = NOTE_GS3;
+          pitch[9] = NOTE_A3;
+          pitch[10] = NOTE_AS3;
+          pitch[11] = NOTE_B3;  
+        }
+        if ((oct_value>=499) && (oct_value<665)){
+          pitch[0] = NOTE_C4;
+          pitch[1] = NOTE_CS4;
+          pitch[2] = NOTE_D4;
+          pitch[3] = NOTE_DS4;
+          pitch[4] = NOTE_E4;
+          pitch[5] = NOTE_F4;
+          pitch[6] = NOTE_FS4;
+          pitch[7] = NOTE_G4;
+          pitch[8] = NOTE_GS4;
+          pitch[9] = NOTE_A4;
+          pitch[10] = NOTE_AS4;
+          pitch[11] = NOTE_B4;  
+        }
+        if ((oct_value>=665) && (oct_value<831)){
+          pitch[0] = NOTE_C5;
+          pitch[1] = NOTE_CS5;
+          pitch[2] = NOTE_D5;
+          pitch[3] = NOTE_DS5;
+          pitch[4] = NOTE_E5;
+          pitch[5] = NOTE_F5;
+          pitch[6] = NOTE_FS5;
+          pitch[7] = NOTE_G5;
+          pitch[8] = NOTE_GS5;
+          pitch[9] = NOTE_A5;
+          pitch[10] = NOTE_AS5;
+          pitch[11] = NOTE_B5;  
+        }
+        if ((oct_value>=831) && (oct_value<997)){
+          pitch[0] = NOTE_C6;
+          pitch[1] = NOTE_CS6;
+          pitch[2] = NOTE_D6;
+          pitch[3] = NOTE_DS6;
+          pitch[4] = NOTE_E6;
+          pitch[5] = NOTE_F6;
+          pitch[6] = NOTE_FS6;
+          pitch[7] = NOTE_G6;
+          pitch[8] = NOTE_GS6;
+          pitch[9] = NOTE_A6;
+          pitch[10] = NOTE_AS6;
+          pitch[11] = NOTE_B6;  
+        }
+        if ((oct_value>=997)){
+          pitch[0] = NOTE_C7;
+          pitch[1] = NOTE_CS7;
+          pitch[2] = NOTE_D7;
+          pitch[3] = NOTE_DS7;
+          pitch[4] = NOTE_E7;
+          pitch[5] = NOTE_F7;
+          pitch[6] = NOTE_FS7;
+          pitch[7] = NOTE_G7;
+          pitch[8] = NOTE_GS7;
+          pitch[9] = NOTE_A7;
+          pitch[10] = NOTE_AS7;
+          pitch[11] = NOTE_B7;  
+        }
   
-       //bpm pot
+      /* bpm pot */
         bpm = (analogRead(POTbpm)/1.5);
         if(bpm < 60){ bpm = 60;}
         interval = 60000/(subdivision*bpm);  
-
-      value[k] = map(analogRead(k), 0, 1023, 0, 2500);         // mapping the value of the Potentiometer to have a wider range of values
-      if ((value[k]>=0) && (value[k]<100))                     // discretization of the pot intervals - in order to assign the note
-        note[k] = 0;    
-      if ((value[k]>=100) && (value[k]<300))
-        note[k] = pitch[0];
-      if ((value[k]>=300) && (value[k]<500))
-        note[k] = pitch[1];
-      if ((value[k]>=500) && (value[k]<700))
-        note[k] = pitch[2];
-      if ((value[k]>=700) && (value[k]<900))
-        note[k] = pitch[3];
-      if ((value[k]>=900) && (value[k]<1100))
-        note[k] = pitch[4];
-      if ((value[k]>=1100) && (value[k]<1300))
-        note[k] = pitch[5];
-      if ((value[k]>=1300) && (value[k]<1500))
-        note[k] = pitch[6];
-      if ((value[k]>=1500) && (value[k]<1700))
-        note[k] = pitch[7];
-      if ((value[k]>=1700) && (value[k]<=1900))
-        note[k] = pitch[8];
-      if ((value[k]>=1900) && (value[k]<=2100))
-        note[k] = pitch[9];
-      if ((value[k]>=2100) && (value[k]<=2300))
-        note[k] = pitch[10];  
-      if ((value[k]>=2300) && (value[k]<=2500))
-        note[k] = pitch[11];       
-
-      //leds
-      //deactivate all leds
-      digitalWrite(Led1, LOW);
-      digitalWrite(Led2, LOW);
-      digitalWrite(Led3, LOW);
-      digitalWrite(Led4, LOW);
-      //activate current led
-      switch(k){
-      case 0: digitalWrite(Led1, HIGH);
-        break;
-      case 1: digitalWrite(Led2, HIGH);
-        break;
-      case 2: digitalWrite(Led3, HIGH);
-        break;
-      case 3: digitalWrite(Led4, HIGH);
-        break;
-      }
-
-      float Duration=D[DurCount]*interval;
-      if(active == true){ // if sound is active play sound
-        // play the note
-        if(wave == 0){
-          tone(speaker, note[k], Duration);   //square    
-        }
-        if(wave == 1){
-          if(note[k] != 0){
-          sw.playTone(note[k], Duration); // sin
-          }
-        }
-        
-      }
-      DurCount++;
-      if(DurCount>=NDuration)DurCount=0;    
+        sw.setInterval(interval);
       
-      delay(Duration);
+      /* pitch pots */
+        value[k] = map(analogRead(k), 0, 1023, 0, 2500);       
+        if ((value[k]>=0) && (value[k]<100))                     
+          note[k] = 0;    
+        if ((value[k]>=100) && (value[k]<300))
+          note[k] = pitch[0];
+        if ((value[k]>=300) && (value[k]<500))
+          note[k] = pitch[1];
+        if ((value[k]>=500) && (value[k]<700))
+          note[k] = pitch[2];
+        if ((value[k]>=700) && (value[k]<900))
+          note[k] = pitch[3];
+        if ((value[k]>=900) && (value[k]<1100))
+          note[k] = pitch[4];
+        if ((value[k]>=1100) && (value[k]<1300))
+          note[k] = pitch[5];
+        if ((value[k]>=1300) && (value[k]<1500))
+          note[k] = pitch[6];
+        if ((value[k]>=1500) && (value[k]<1700))
+          note[k] = pitch[7];
+        if ((value[k]>=1700) && (value[k]<=1900))
+          note[k] = pitch[8];
+        if ((value[k]>=1900) && (value[k]<=2100))
+          note[k] = pitch[9];
+        if ((value[k]>=2100) && (value[k]<=2300))
+          note[k] = pitch[10];  
+        if ((value[k]>=2300) && (value[k]<=2500))
+          note[k] = pitch[11];       
+
+      /* leds */
+        /* deactivate all leds */
+        digitalWrite(Led1, LOW);
+        digitalWrite(Led2, LOW);
+        digitalWrite(Led3, LOW);
+        digitalWrite(Led4, LOW);
+        /* activate current led */
+        switch(k){
+        case 0: digitalWrite(Led1, HIGH);
+          break;
+        case 1: digitalWrite(Led2, HIGH);
+          break;
+        case 2: digitalWrite(Led3, HIGH);
+          break;
+        case 3: digitalWrite(Led4, HIGH);
+          break;
+        }
+
+     /* play sound */
+        float Duration=D[DurCount]*interval;
+        if(active == true){ /* if button is active play sound */
+          /* play the note */
+            if(wave == 0){ /* square wave */
+              tone(speaker, note[k], Duration);   
+            }
+            if(wave == 1){ /* sine wave */
+              if(note[k] != 0){
+              sw.playTone(note[k]);
+              }
+            }
+          
+        }
+        DurCount++;
+        if(DurCount>=NDuration)DurCount=0;    
+
+     /* apply delay*/
+        delay(Duration);
       
-      if(wave = 1){sw.stopTone();} // if wave is sin then stop sin sound after delay
+      if(wave = 1){sw.stopTone();} /* if wave is sine then stop sine sound after delay */
    }
 }
