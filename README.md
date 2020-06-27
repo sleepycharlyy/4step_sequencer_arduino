@@ -10,7 +10,6 @@ my code is a bit janky and its my first time programming with an arduino so dont
 but it seems to work haha.
 
 # circuit
-/*
  *  circuit:
  *  
  *  connect led1 to pin d2, led2 to pin d3, led3 to pin d4, led4 to pin d5
@@ -21,5 +20,3 @@ but it seems to work haha.
  *  connect pattern potentometer to a6
  *  connect wave potentometer to a7
  *  connect on off button to pin 6
- *  
-*/  
