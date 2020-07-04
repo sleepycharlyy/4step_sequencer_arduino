@@ -1,4 +1,4 @@
-# 4step-sequencer-arduino
+# 4 Step Sequencer Arduino
 my first little arduino nano project
 
 its a 4 step sequencer for my arduino with 7 potentiometers 
@@ -9,9 +9,7 @@ and one button to turn it on and off.
 my code is a bit janky and its my first time programming with an arduino so dont expect to much.
 but it seems to work haha.
 
-# circuit
- *  circuit:
- *  
+# Circuit
  *  connect led1 to pin d2, led2 to pin d3, led3 to pin d4, led4 to pin d5
  *  connect speaker to pin d9
  *  connect pitch potentometers to a0 to a3
