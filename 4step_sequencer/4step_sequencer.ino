@@ -3,16 +3,17 @@
 
 
 /*
- *  circuit:
+ *  pins:
  *  
  *  connect led1 to pin d2, led2 to pin d3, led3 to pin d4, led4 to pin d5
+ *  connect on off button to pin d6
  *  connect speaker to pin d9
  *  connect pitch potentometers to a0 to a3
  *  connect octave potentometer to a4
  *  connect bpm potentometer to a5
  *  connect pattern potentometer to a6
- *  connect wave potentometer to a7
- *  connect on off button to pin 6
+ *  connect waveform potentometer to a7
+ *
  *  
 */  
 
