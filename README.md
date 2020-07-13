@@ -14,6 +14,8 @@ but it seems to work haha.
 
 ## Circuit
 
+![](circuit_schematic?raw=true)
+
 ### Pins
 
  *  connect led1 to pin d2, led2 to pin d3, led3 to pin d4, led4 to pin d5
