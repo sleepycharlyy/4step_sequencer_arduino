@@ -14,7 +14,7 @@ but it seems to work haha.
 
 ## Circuit
 
-![](circuit_schematic?raw=true)
+![](circuit_schematic.pdf?raw=true)
 
 ### Pins
 
