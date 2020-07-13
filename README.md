@@ -25,3 +25,7 @@ but it seems to work haha.
  *  connect pattern potentometer to a6
  *  connect waveform potentometer to a7
 
+## Libraries
+
+ * [cmasenas/SineWave](https://github.com/cmasenas/SineWave) 
+ * [PaulStoffregen/TimerOne](https://github.com/PaulStoffregen/TimerOne)
