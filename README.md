@@ -2,19 +2,20 @@
 
 ## About
 
-my first little arduino nano project
+my first little arduino nano project! uwu
 
-its a 4 step sequencer for my arduino with 7 potentiometers 
-4 for every step (pitch) and 3 to manipulate the overall bpm, waveform and pitch.
-i used 4 leds that blink over the 4 pots every time a step is played.
+its a 4 step sequencer for my arduino that uses 7 potentiometers.
+four for every step (to manipulate the pitch of each step) and three to manipulate the bpm, waveform and pitch.
+i used four leds (corresponding to each step) that blink to every beat. 
 and one button to turn it on and off.
 
-my code is a bit janky and its my first time programming with an arduino so dont expect to much.
+my code is a bit janky and its my first time programming with an arduino so don't expect to much.
 but it seems to work haha.
 
 ## Circuit
 
 ### Pins
+
  *  connect led1 to pin d2, led2 to pin d3, led3 to pin d4, led4 to pin d5
  *  connect on off button to pin d6
  *  connect speaker to pin d9
