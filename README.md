@@ -31,3 +31,8 @@ but it seems to work haha.
 
  * [cmasenas/SineWave](https://github.com/cmasenas/SineWave) 
  * [PaulStoffregen/TimerOne](https://github.com/PaulStoffregen/TimerOne)
+ 
+ ## Credits
+ 
+ I took [constantinorizzuti/step-sequencer](https://create.arduino.cc/projecthub/costantinorizzuti/step-sequencer-19a9d7) source code as a starting point and 
+ moved forward from there.
