@@ -1,5 +1,7 @@
 # 4 Step Sequencer Arduino
 
+[![ko-fi](https://www.ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/Y8Y11Y0ET)
+
 ## About
 
 my first little arduino nano project! uwu
